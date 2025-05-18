@@ -65,17 +65,26 @@
   * {
     @apply border-border m-0 p-0;
   }
-  body {
-    @apply bg-background text-foreground bg-darkerBackgroundColor w-full h-[100vh];
+  html {
+    @apply bg-background text-foreground bg-darkerBackgroundColor w-full h-full max-h-[100vh] border border-red-500;
   }
+
+  body, #root{
+    @apply h-full;
+  }
+
+  main{
+    border: 1px solid blue;
+  }
+
 }
 
 main,nav{
   /* rem amount is is equivalent to max-w-9xl */
-  @apply max-w-[108rem] mx-auto my-12;
+  @apply max-w-[90%] mx-auto;
 } 
 p{
-  @apply mt-2;
+  @apply mt-2 text-sm;
 }
 h1{
   @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;

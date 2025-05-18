@@ -54,7 +54,7 @@ export default {
   				'5': 'hsl(var(--chart-5))'
   			},
         backgroundColor: '#2E3137',
-				darkerBackgroundColor: '#1E1E21',
+		darkerBackgroundColor: '#1E1E21',
         contrastColor: {
           100: '#faef8c',
           500: '#FFF27A',

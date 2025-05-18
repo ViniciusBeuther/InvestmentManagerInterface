@@ -1,21 +1,21 @@
 import React from 'react'
 import { Data } from '../../types/data.ts'
 import '../../index.css'
-import InvestmentTable from '../../components/InvestmentTable/InvestmentTable.tsx'
 import HomeGrid from '../../components/HomeGrid/HomeGrid.tsx'
 
-interface homePropInterface{
-  investmentData: Data[] 
+interface homePropInterface {
+  investmentData: Data[]
 }
 
-const Home:React.FC<homePropInterface> = ( { investmentData } ) => {
+const Home: React.FC<homePropInterface> = ({ investmentData }) => {
   return (
-    <main>
-      <h1 className='text-white mb-5'>Hello, world!</h1>
-      <InvestmentTable assets={investmentData} />
-      <HomeGrid />
-    </main>
+    <section className='flex flex-col mx-auto w-[90%]'>
+      <header className='bg-pink-400'>header</header>
+      <section className='h-full bg-green-400 box-border'>
+        <HomeGrid assets={investmentData} />
+      </section>
+    </section>
   )
 }
 
-export default Home
+export default Home;

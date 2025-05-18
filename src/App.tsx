@@ -23,15 +23,13 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <>
       {data ? (
-        <>
           <Home investmentData={data} />
-        </>
       ) : (
-        <p>a</p>
+        <p>Loading data...</p>
       )}
-    </div>
+    </>
   );
 };
 
