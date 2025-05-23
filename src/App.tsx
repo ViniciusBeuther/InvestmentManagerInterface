@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import "./index.css";
 import Home from "./pages/Home/Home.tsx";
 import { Data } from "./types/data.ts";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Dashboard from "./pages/Dashboard/Dashboard.tsx";
+import Distribution from "./pages/Distribution/Distribution.tsx";
 
 const App: React.FC = () => {
   const API_URL: string = "http://127.0.0.1:8000/wallet";
-  const [data, setData] = useState<Data[]>();
+  const [data, setData] = useState<Data[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // function to fetch data from backend
   useEffect(() => {
     async function fetchData() {
       try {
@@ -15,22 +18,43 @@ const App: React.FC = () => {
         const result = await response.json();
         setData(result);
       } catch (error) {
-        return console.log("Error fetching data on App.tsx");
+        console.error("Error fetching data on App.tsx", error);
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchData();
   }, []);
 
-  return (
-    <>
-      {data ? (
-          <Home investmentData={data} />
-      ) : (
-        <p>Loading data...</p>
-      )}
-    </>
-  );
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!data) {
+    return <p>Erro ao carregar os dados.</p>;
+  }
+
+  const router = createBrowserRouter([
+    {
+      path: "/home",
+      element: <Home investmentData={data} />,
+    },
+    {
+      path: "/",
+      element: <Home investmentData={data} />,
+    },
+    {
+      path: "/dashboard",
+      element: <Dashboard />
+    },
+    {
+      path: "/distribution",
+      element: <Distribution />
+    }
+  ]);
+
+  return <RouterProvider router={router} />;
 };
 
 export default App;

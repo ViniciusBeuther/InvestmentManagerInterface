@@ -1,6 +1,6 @@
 import { Data } from '../../types/data';
 import InvestmentTable from '../InvestmentTable/InvestmentTable';
-import './homegrid.css'
+import Sidebar from '../Sidebar/Sidebar';
 
 interface HomeGridProps{
   assets: Data[];
@@ -8,17 +8,16 @@ interface HomeGridProps{
 
 const HomeGrid = ( { assets }:HomeGridProps  ) => {
   return (
-    <div className="parent bg-white h-full">
-      <div className="div1">1</div>
-      <div className="div2">2</div>
-      <div className="div3">3</div>
-      <div className="div4 rounded-lg">
+    <section className="h-full flex">
+      <article className="w-[20%]">
+        <Sidebar />
+      </article>
+      <article className='bg-tertiary w-[80%] p-5'>
+        <h1>Carteira de Investimentos</h1>
+        <h2 className='text-gray-600'>Acompanhe os ativos em seu Portfolio.</h2>
         <InvestmentTable assets={assets} />
-      </div>
-      <div className="div5">5</div>
-      <div className="div6">6</div>
-      <div className="div7">7</div>
-    </div>
+      </article>
+    </section>
   );
 };
 

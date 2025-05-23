@@ -9,11 +9,8 @@ interface homePropInterface {
 
 const Home: React.FC<homePropInterface> = ({ investmentData }) => {
   return (
-    <section className='flex flex-col mx-auto w-[90%]'>
-      <header className='bg-pink-400'>header</header>
-      <section className='h-full bg-green-400 box-border'>
+    <section className='flex flex-col h-full'>
         <HomeGrid assets={investmentData} />
-      </section>
     </section>
   )
 }

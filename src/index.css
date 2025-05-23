@@ -64,6 +64,9 @@
 @layer base {
   * {
     @apply border-border m-0 p-0;
+      font-family: "Manrope", sans-serif;
+      font-optical-sizing: auto;  
+      font-style: normal;
   }
   html {
     @apply bg-background text-foreground bg-darkerBackgroundColor w-full h-full max-h-[100vh] border border-red-500;
@@ -73,16 +76,8 @@
     @apply h-full;
   }
 
-  main{
-    border: 1px solid blue;
-  }
-
 }
 
-main,nav{
-  /* rem amount is is equivalent to max-w-9xl */
-  @apply max-w-[90%] mx-auto;
-} 
 p{
   @apply mt-2 text-sm;
 }
@@ -91,4 +86,7 @@ h1{
 } 
 h2{
   @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
+}
+h3{
+  @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight transition-colors first:mt-0;
 }
