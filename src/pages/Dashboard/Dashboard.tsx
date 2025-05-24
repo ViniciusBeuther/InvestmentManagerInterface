@@ -11,6 +11,7 @@ const Dashboard = () => {
         <article className='bg-tertiary w-[80%] p-5'>
             <h1>Dashboard</h1>
             <h2 className='text-gray-600'>Bem vindo, Vinicius!</h2>
+            <p>Dashboard grid</p>
         </article>
     </section>
     )
