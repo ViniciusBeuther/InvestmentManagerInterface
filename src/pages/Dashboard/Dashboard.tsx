@@ -1,8 +1,14 @@
 import React from 'react'
+import './index.css';
 import Sidebar from '../../components/Sidebar/Sidebar'
 
 const Dashboard = () => {
-  
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
     return (
     <section className="h-full flex">
         <article className="w-[20%]">
@@ -10,8 +16,20 @@ const Dashboard = () => {
         </article>
         <article className='bg-tertiary w-[80%] p-5'>
             <h1>Dashboard</h1>
-            <h2 className='text-gray-600'>Bem vindo, Vinicius!</h2>
-            <p>Dashboard grid</p>
+            <h2 className='text-gray-600'>Bem Vindo, Vinicius!</h2>
+            <h3 className='text-gray-400 text-sm'>{ formattedDate }</h3>
+            <section className='parent h-[70%] box-border'>
+                <div className="div1 bg-red-300">Total investido</div>
+                <div className="div2 bg-green-300">Rentabilidade</div>
+                <div className="div3 bg-blue-300">Dividendo do Mes Passado</div>
+                <div className="div4 bg-purple-300">Lucro/Prejuizo aculado</div>
+                <div className="div5 bg-yellow-300">Pie Chart Distribuicao</div>
+                <div className="div6 bg-gray-300">Historico de aporte</div>
+                <div className="div7 bg-orange-300">Ativo mais Rentavel</div>
+                <div className="div8 bg-pink-300">Ativo menos Rentavel</div>
+                <div className="div9 bg-yellow-500">Top 5 por valor</div>
+                <div className="div10 bg-green-700">DY do mês</div>
+            </section>
         </article>
     </section>
     )
