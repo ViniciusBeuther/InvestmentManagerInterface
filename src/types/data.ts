@@ -5,3 +5,8 @@ export interface Data{
   "Preço Médio": number,
   "Tipo": string,
 }
+
+export interface totalsInterface {
+  totalInvestido: number,
+  totalDividendos: number,
+}

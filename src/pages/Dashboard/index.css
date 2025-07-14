@@ -24,6 +24,11 @@ grid-row-gap: 10px;
   text-align: center;
   border-radius: 12px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: column;
+  margin-top: 15px;
 }
 
 .parent>div {
