@@ -4,16 +4,6 @@ import treasureLogo from '../../public/treasureLogo.png';
 import FIILogo from '../../public/FIILogo.png';
 
 export class MarketUtils {
-    public dataCache: BRAPIResponse[] = [];
-
-    public initialize(): void {
-        this.dataCache = getDataFromLocalStorage();
-    }
-
-    public getDataCache(): BRAPIResponse[] {
-        return this.dataCache;
-    }
-
 /**
  * 
  * @param asset 
@@ -30,10 +20,21 @@ export class MarketUtils {
     };
 
 
+    /**
+     * 
+     * @param symbol stock code without the 'F' suffix
+     * @returns information about the asset from the local storage
+     */
     public getAssetBySymbol = (symbol: string): BRAPIResponse | undefined => {
-        return this.dataCache.find((asset) => asset.symbol === symbol);
+        const cachedData = getDataFromLocalStorage();
+        return cachedData.find((asset) => asset.symbol === symbol);
     }
 
+    /**
+     * 
+     * @param symbol stock code without the 'F' suffix
+     * @returns the current price of the asset, if not found returns 0.00
+     */
     public getPriceBySymbol = (symbol: string): number => {
         const asset = this.getAssetBySymbol(symbol.replace(/F$/, ''));
         return asset ? asset.regularMarketPrice : 0.00;
