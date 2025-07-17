@@ -155,6 +155,7 @@ export const fetchPortfolioPricesWithCache = async (portfolio: string[]): Promis
  */
 export const getDataFromLocalStorage = (): BRAPIResponse[] => {
     const cachedData = localStorage.getItem(import.meta.env.VITE_CACHE_KEY);
+    // console.log('Cached Data:', JSON.parse(cachedData || ''));
     if (cachedData) {
         try {
             return JSON.parse(cachedData);
