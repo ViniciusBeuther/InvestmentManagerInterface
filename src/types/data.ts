@@ -7,6 +7,29 @@ export interface Data{
 }
 
 export interface totalsInterface {
-  totalInvestido: number,
-  totalDividendos: number,
+  'totalInvestido': number,
+  'totalDividendos': number,
+}
+
+export interface dividendPerformanceInterface{
+  'totalInvested' : number,
+  'totalReceived' : number,
+  'performance' : number,
+}
+
+
+export interface BRAPIResponse {
+      "symbol": string,
+      "shortName": string,
+      "longName": string,
+      "currency": string,
+      "regularMarketPrice": number,
+      "regularMarketDayHigh": number,
+      "regularMarketDayLow": number,
+      "regularMarketChange": number,
+      "regularMarketChangePercent": number,
+      "regularMarketTime": string,
+      "marketCap": number,
+      "regularMarketVolume": number,
+      "logourl": string,
 }
