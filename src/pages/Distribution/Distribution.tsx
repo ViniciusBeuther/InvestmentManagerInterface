@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from '../../components/Sidebar/Sidebar'
+import { getDataFromLocalStorage, getPortfolio } from '../../utils/utils'
+import { BRAPIResponse, Data } from '../../types/data'
 
 interface distributionResponse {
     type: string,
@@ -8,32 +10,29 @@ interface distributionResponse {
 }
 
 const Distribution = () => {
-    const [data, setData] = useState<distributionResponse[]>([])
-    const endpoint = "http://localhost:8000/wallet/distribution"
+    const financialAPIdata : BRAPIResponse[] = getDataFromLocalStorage() || [];
+    const [completePortfolio, setPortfolio] = useState<Data[]>([]);
 
+    // call method to fetch complete portfolio data 
     useEffect(() => {
-        async function fetchData() {
+        async function fetchPortfolioAsync() {
             try {
-                const res = await window.fetch(endpoint)
-                const json = await res.json();
-                setData(json.distribution);
-                // console.log(json)
+                const result = await getPortfolio();
+                setPortfolio(result);
             } catch (error) {
-                alert("Erro ao buscar distribuição...")
-                console.error(error)
+                console.error("Error fetching portfolio:", error);
             }
         }
+        fetchPortfolioAsync();
+    }, []);
 
-        fetchData()
-    }, [])
+    // console.log('Portfolio:', completePortfolio);
+
+    // console.log('Financial API Data:', financialAPIdata);
 
     const capitalize = (word: string): string => {
         if (!word) return ""
         return word.charAt(0).toUpperCase() + word.slice(1)
-    }
-
-    if (data.length === 0) {
-        return <p>Loading...</p>
     }
 
     return (
@@ -42,31 +41,10 @@ const Distribution = () => {
                 <Sidebar />
             </article>
             <article className='bg-tertiary w-[80%] p-5'>
-                <h1>Distribuição da Carteira</h1>
-                <h2 className='text-gray-600'>Acompanhe percentuais de alocação.</h2>
-                <section className='rounded-5xl py-2 text-sm mt-4'>
-                    <table className='w-full rounded-lg shadow-lg border-[1px] border-gray-200'>
-                        <thead>
-                            <tr className='text-center bg-secondary-500'>
-                                <th className='p-2 rounded-l-md'>Categoria</th>
-                                <th className='p-2'>Total Investido (R$)</th>
-                                <th className='p-2 rounded-r-md'>Distribuição</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((item, idx) => (
-                                <tr className='text-gray-800 border-b-[1px] text-center' key={idx}>
-                                    <td className='p-1'>{capitalize(item.type)}</td>
-                                    <td className='p-1'>{item.total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
-                                    <td className='p-1'>{item.percentage.toFixed(2)}%</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </section>
+               distrib
             </article>
         </section>
     )
 }
 
-export default Distribution
+export default Distribution;
