@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 .env
 src/vite-env.d.ts
+src/vite-env.d.ts
