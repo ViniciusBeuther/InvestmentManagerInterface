@@ -1,5 +1,5 @@
 import { BRAPIResponse, Data } from "../types/data";
-import { getDataFromLocalStorage } from "./utils";
+import { formatAmount, formatPercentage, getDataFromLocalStorage } from "./utils";
 import treasureLogo from '../../public/treasureLogo.png';
 import FIILogo from '../../public/FIILogo.png';
 
@@ -38,5 +38,30 @@ export class MarketUtils {
     public getPriceBySymbol = (symbol: string): number => {
         const asset = this.getAssetBySymbol(symbol.replace(/F$/, ''));
         return asset ? asset.regularMarketPrice : 0.00;
+    }
+
+
+    public getProfitBySymbol = (symbol: string, quantity: number, avgPrice : number, returnResponse: string): string => {
+        const cachedData = getDataFromLocalStorage();
+        const asset = cachedData.find((asset) => asset.symbol === symbol.replace(/F$/, ''));
+        if (!asset) {
+            console.error(`Asset with symbol ${symbol} not found in local storage.`);
+            return "";
+        }
+        
+        const profit = asset?.regularMarketPrice * quantity - avgPrice * quantity || undefined;
+        
+        console.log(`Profit for ${symbol}:`, profit);
+        if (profit === undefined)
+            return "";
+        const profitPercent = profit / (avgPrice * quantity) * 100 || 0;
+
+        if (returnResponse == 'percent') 
+            return `${formatPercentage(profitPercent, 2)}`
+        else if (returnResponse == 'amount') 
+            return `${formatAmount(profit)}`;
+         else 
+            return `${formatPercentage(profitPercent, 2)} (${formatAmount(profit)})`
+        
     }
 };
