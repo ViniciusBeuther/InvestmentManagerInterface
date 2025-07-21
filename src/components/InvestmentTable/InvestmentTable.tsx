@@ -79,6 +79,14 @@ const InvestmentTable: React.FC<InvestmentTablePropsInterface> = ({ assets }) =>
                           currency: 'BRL'
                         })}
                       </div>
+                      <div>
+                        <span className="text-gray-500">Variação: </span>{' '}
+                        { MarketClass.getProfitBySymbol( asset["Código de Negociação"], asset["Quantidade"], asset["Preço Médio"], "amount" ) }
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Variação: </span>{' '}
+                        { MarketClass.getProfitBySymbol( asset["Código de Negociação"], asset["Quantidade"], asset["Preço Médio"], "percent" ) }
+                      </div>
                     </div>
                   </div>
                 ))}
