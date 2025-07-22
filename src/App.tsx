@@ -16,6 +16,7 @@ const App: React.FC = () => {
       try {
         const response = await fetch(API_URL);
         const result = await response.json();
+        // console.log("Fetched data:", result);
         setData(result);
       } catch (error) {
         console.error("Error fetching data on App.tsx", error);
