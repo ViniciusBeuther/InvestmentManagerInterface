@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import './index.css';
 import Sidebar from '../../components/Sidebar/Sidebar'
-import { BRAPIResponse, dividendPerformanceInterface, totalsInterface } from '../../types/data';
-import { fetchPortfolioPricesWithCache, formatAmount, formatPercentage, getPortfolio } from '../../utils/utils';
+import { BRAPIResponse, Data, dividendPerformanceInterface, totalsInterface } from '../../types/data';
+import { calculateTotalInvestedMarketPrice, fetchPortfolioPricesWithCache, formatAmount, formatPercentage, getCompletePortfolio, getDataFromLocalStorage, getPortfolio } from '../../utils/utils';
+import { MarketUtils } from '../../utils/marketUtils';
+import { get } from 'http';
 
-const Dashboard = () => {
+interface DashboardProps {
+    investmentData: Data[];
+}
+
+const Dashboard = ( props:DashboardProps ) => {
     const year = new Date().getFullYear();
     const month = new Date().getMonth(); // Months are 0
     const totalAPIendpoint: string = "http://localhost:8000/wallet/totals";
@@ -12,15 +18,21 @@ const Dashboard = () => {
 
     const [totalData, setTotalDate] = useState<totalsInterface | null>();
     const [dividendPerfomanceData, setDividendPerformanceData] = useState<dividendPerformanceInterface | null>();
+    
+
+    const [userAssets, setUserAssets] = useState<Data[] | null>(null);
+    useEffect(() => {
+        getPortfolio().then((data) => {
+            setUserAssets(data);
+        }).catch((error) => {
+            console.error("Error fetching user assets:", error);
+        });
+    }, [])
+
+    // console.log("user assets: ", userAssets);
 
     // Portfolio to be used for BRAPI API calls
     const [portfolio, setPortfolio] = useState<string[]>([]);
-    const [apiData, setApiData] = useState<BRAPIResponse[] | null>(null);
-    const key = import.meta.env.VITE_BRAPI_API_KEY;
-    const brapiConsultRoute = import.meta.env.VITE_BRAPI_API_CONSULT_ROUTE;
-
-    // Cache duration in milliseconds (15 minutes)
-    const CACHE_DURATION = 15 * 60 * 1000;
 
     const today = new Date();
     const formattedDate = today.toLocaleDateString('pt-BR', {
@@ -76,45 +88,9 @@ const Dashboard = () => {
     }, []);
 
 const [info, setInfo] = useState<BRAPIResponse[] | null>();
-
-// useEffect(() => {
-//     if (portfolio.length === 0) return;
-
-//     const fetchData = async () => {
-//         const results = [];
-
-//         for (let i = 0; i < portfolio.length; i++) {
-//             const cleaned = portfolio[i].replace(/F$/, '');
-//             console.log('Fetching for:', cleaned);
-
-//             try {
-//                 const response = await fetch(`${brapiConsultRoute}/${cleaned}`, {
-//                     headers: {
-//                         Authorization: `Bearer ${key}`,
-//                         'Content-Type': 'application/json',
-//                     },
-//                     method: 'GET',
-//                 });
-
-//                 const data = await response.json();
-//                 console.log('BRAPI Data:', data.results[0]);
-
-//                 if (data.results && data.results.length > 0) {
-//                     results.push(data.results[0]);
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching BRAPI data:', error);
-//             }
-
-//             await new Promise(resolve => setTimeout(resolve, 500)); // delay 1 second
-//         }
-
-//         setInfo(results);
-//         console.log('Info Array:', results);
-//     };
-
-//     fetchData();
-// }, [portfolio]);
+let totalInvested : number = 0;
+if (userAssets != null)
+    totalInvested = calculateTotalInvestedMarketPrice(userAssets, "all");
 
 useEffect(() => {
     if (portfolio.length === 0) return;
