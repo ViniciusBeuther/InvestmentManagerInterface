@@ -190,9 +190,25 @@ export const getCompletePortfolio = async () => {
  */
 export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: string ) : number => {
     const marketData = getDataFromLocalStorage();
+    
     let total = 0.00;
     if (!marketData || !portfolio) return 0;
-    console.log(`data totals: ${total} - ${portfolio}`);
+    // console.log(`data totals: ${marketData.at(0)?.symbol} - ${portfolio.at(5)?.["Código de Negociação"].replace(/F$/, '')}`);
+    for (const asset of portfolio) {
+        const symbol = asset['Código de Negociação'].replace(/F$/, '');
+        const marketAsset = marketData.find((value) => value.symbol === symbol);
+        if (asset.Tipo.includes("Tesouro"))
+            total += asset.Valor;
+
+        if (!marketAsset) continue; // Skip if no market data found for the asset
+
+        if (category === 'all') {
+            total += marketAsset.regularMarketPrice * asset.Quantidade;
+        } 
+    }
+
+    //console.log(`Total invested in market price for category ${category}: ${total}`);
+
     return total;
 };
 
