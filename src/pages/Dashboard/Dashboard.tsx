@@ -19,15 +19,9 @@ const Dashboard = ( props:DashboardProps ) => {
     const [totalData, setTotalDate] = useState<totalsInterface | null>();
     const [dividendPerfomanceData, setDividendPerformanceData] = useState<dividendPerformanceInterface | null>();
     
+    // console.log(`props: ${props.investmentData.at(0)?.['Código de Negociação']}`);
 
-    const [userAssets, setUserAssets] = useState<Data[] | null>(null);
-    useEffect(() => {
-        getPortfolio().then((data) => {
-            setUserAssets(data);
-        }).catch((error) => {
-            console.error("Error fetching user assets:", error);
-        });
-    }, [])
+    const [userAssets, setUserAssets] = useState<Data[] | null>(props.investmentData);
 
     // console.log("user assets: ", userAssets);
 
@@ -123,8 +117,9 @@ useEffect(() => {
                     {totalData ? (
                         <>
                             <div className="div1 bg-red-300">
-                                <h5>Total investido</h5>
-                                <h1>{formatAmount(totalData.totalInvestido)}</h1>
+                                <h5>Posição atual:</h5>
+                                <h1>{formatAmount(totalInvested)}</h1>
+                                <h4>Aplicado: {formatAmount(totalData.totalInvestido)}</h4>
                             </div>
                             <div className="div4 bg-purple-300">
                                 <h5>Total de Dividendos</h5>
