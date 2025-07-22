@@ -170,12 +170,11 @@ export const getDataFromLocalStorage = (): BRAPIResponse[] => {
  * the complete portfolio fetched from the backend, it includes tesouro assets and does not remove the 'F$' suffix
  * @returns Data[] - an array of Data objects representing the complete portfolio
  */
-const getCompletePortfolio = async () => {
+export const getCompletePortfolio = async () => {
     try {
         const response = await fetch("http://localhost:8000/wallet/assets/all");
         const data = await response.json();
         const filteredPortfolio : Data = data.assets
-            .filter((item: string) => !item.match('.*Tesouro.*'))
             .map((item: string) => item.replace('F$', ''));
         // console.log("Portfolio:", filteredPortfolio);
         return filteredPortfolio;
@@ -183,4 +182,17 @@ const getCompletePortfolio = async () => {
         console.error("Error fetching portfolio:", error);
     }
 }
+
+/**
+ * 
+ * @param category can be 'Ações', 'FIIs', 'Tesouro Direto', "all"
+ * @returns the total invested amount in the market price for the given category
+ */
+export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: string ) : number => {
+    const marketData = getDataFromLocalStorage();
+    let total = 0.00;
+    if (!marketData || !portfolio) return 0;
+    console.log(`data totals: ${total} - ${portfolio}`);
+    return total;
+};
 
