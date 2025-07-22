@@ -46,7 +46,7 @@ const App: React.FC = () => {
     },
     {
       path: "/dashboard",
-      element: <Dashboard />
+      element: <Dashboard investmentData={data} />
     },
     {
       path: "/distribution",
