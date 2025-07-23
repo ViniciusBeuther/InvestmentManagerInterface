@@ -13,13 +13,8 @@ const HomeGrid = ({ assets }: HomeGridProps) => {
         <Sidebar />
       </aside>
 
-      <main className="w-[80%] p-5 bg-tertiary flex flex-col">
-        <header className="mb-4">
-          <h1 className="text-xl font-bold">Carteira de Investimentos</h1>
-          <h2 className="text-gray-600">Acompanhe os ativos em seu Portfolio.</h2>
-        </header>
-
-        <div className="overflow-y-auto overflow-x-auto max-h-full border rounded-lg">
+      <main className="w-[80%] flex flex-col">
+        <div className="overflow-y-auto overflow-x-auto max-h-full">
           <InvestmentTable assets={assets} />
         </div>
       </main>
