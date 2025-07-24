@@ -34,6 +34,11 @@ interface DistributionData {
   percentage: number;
 }
 
+interface IMonthlyContribution {
+    month: string;
+    amount: number;
+}
+
 interface DistributionResponse {
   distribution: DistributionData[];
 }
@@ -45,10 +50,12 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
   const totalAPIendpoint = 'http://localhost:8000/wallet/totals';
   const dividendPerformanceAPIendpoint = `http://localhost:8000/wallet/dividends/performance/${year}/${month}`;
   const distributionAPIendpoint = 'http://localhost:8000/wallet/distribution';
+  const monthlyContributionAPIEndpoint = 'http://localhost:8000/wallet/contributionHistory';
 
   const [totalData, setTotalDate] = useState<totalsInterface | null>(null);
   const [dividendPerformanceData, setDividendPerformanceData] = useState<dividendPerformanceInterface | null>(null);
   const [distributionData, setDistributionData] = useState<DistributionResponse | null>(null);
+  const [monthlyContributionData, setMonthlyContributionData] = useState<IMonthlyContribution[] | null>(null);
   const [userAssets, setUserAssets] = useState<Data[] | null>(investmentData);
   const [portfolio, setPortfolio] = useState<string[]>([]);
   const [info, setInfo] = useState<BRAPIResponse[] | null>(null);
@@ -94,6 +101,13 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
       .catch((err) => console.error('Erro ao buscar distribuição:', err));
   }, []);
 
+  useEffect(() => {
+    fetch(monthlyContributionAPIEndpoint)
+        .then((res) => res.json())
+        .then(setMonthlyContributionData)
+        .catch((err) => console.error('Erro ao buscar histórico de aportes mensais:', err));
+  }, [])
+  //console.log(`Monthly Contributions:`, monthlyContributionData);
   // Calculate if position is positive or negative
   const isPositivePosition = totalData ? totalInvested >= totalData.totalInvestido : true;
   const positionPercentage = totalData 
@@ -384,7 +398,7 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
                             {config?.label || item.type}
                             </p>
                             <span className="ml-3 text-sm font-semibold text-slate-600 tabular-num flex-shrink-0">
-                            {formatPercentage(item.percentage)}
+                            {formatPercentage(item.percentage, 2)}
                             </span>
                         </div>
                         </div>
