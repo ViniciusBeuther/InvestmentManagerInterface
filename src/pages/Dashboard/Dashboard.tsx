@@ -426,9 +426,9 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
 
                             {/* Chart */}
                             {monthlyContributionData && monthlyContributionData.length > 0 ? (
-                                <div className="h-48 mb-4">
+                                <div className="h-48 mb-4 mt-7">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={monthlyContributionData} width={600} height={350}>
+                                        <LineChart data={monthlyContributionData} width={600} height={350} className='p-2'>
                                             <CartesianGrid strokeDasharray="3 3" />
 
                                             <XAxis
