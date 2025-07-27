@@ -1,4 +1,4 @@
-import { BRAPIResponse, Data } from "../types/data";
+import { BRAPIResponse, Data, IMarginResponse } from "../types/data";
 
 /**
  * 
@@ -211,4 +211,14 @@ export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: 
 
     return total;
 };
+
+
+export const getBestMargin =( category: string, portfolio: Data[] ) : IMarginResponse => {
+    
+    return {
+        symbol: '',
+        margin: 0,
+        category: category
+    }
+}
 
