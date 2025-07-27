@@ -33,3 +33,9 @@ export interface BRAPIResponse {
       "regularMarketVolume": number,
       "logourl": string,
 }
+
+export interface IMarginResponse {
+  "symbol": string,
+  "margin": number,
+  "category": string
+}
