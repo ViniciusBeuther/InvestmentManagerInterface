@@ -213,12 +213,48 @@ export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: 
 };
 
 
-export const getBestMargin =( category: string, portfolio: Data[] ) : IMarginResponse => {
-    
-    return {
-        symbol: '',
-        margin: 0,
-        category: category
+export const getBestMargin = (category: string, portfolio: Data[]): IMarginResponse => {
+    if (!portfolio || portfolio.length === 0) {
+        console.log("No portfolio data available to calculate margin.");
+        return { symbol: '', margin: 0, category: '' };
     }
+
+    const marketData = getDataFromLocalStorage();
+    let profits: { symbol: string; margin: number; category: string }[] = [];
+
+    if (!marketData || marketData.length === 0) {
+        console.log("No market data available to calculate margin.");
+        return { symbol: '', margin: 0, category: '' };
+    }
+
+    portfolio.forEach((asset) => {
+        // Use bracket notation for property names with special characters
+        const symbol = asset["Código de Negociação"] ? asset["Código de Negociação"].replace(/F$/, '') : '';
+        console.log(`getBestMargin : ${symbol}`);
+        marketData.forEach((marketAsset) => {
+            if (symbol === marketAsset.symbol) {
+                const quantidade = asset["Quantidade"];
+                const precoMedio = asset["Preço Médio"];
+                const profit = marketAsset.regularMarketPrice * quantidade - precoMedio * quantidade;
+                const profitPercent = (profit / (precoMedio * quantidade)) * 100;
+
+                profits.push({
+                    symbol: marketAsset.symbol,
+                    margin: profitPercent,
+                    category: asset["Tipo"]
+                });
+            }
+        });
+    });
+
+    // Find the best margin (highest)
+    const best = profits.reduce((prev, current) => (prev.margin > current.margin ? prev : current), { symbol: '', margin: -Infinity, category: '' });
+
+    // If no profits found, return default object
+    if (best.margin === -Infinity) {
+        return { symbol: '', margin: 0, category: '' };
+    }
+
+    return best;
 }
 
