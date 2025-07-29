@@ -37,5 +37,7 @@ export interface BRAPIResponse {
 export interface IMarginResponse {
   "symbol": string,
   "margin": number,
-  "category": string
+  "category": string,
+  "quantity": number,
+  "avgPrice": number,
 }
