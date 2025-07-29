@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './index.css';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import { BRAPIResponse, Data, dividendPerformanceInterface, totalsInterface } from '../../types/data';
+import { BRAPIResponse, Data, dividendPerformanceInterface, IMarginResponse, totalsInterface } from '../../types/data';
 import {
     calculateTotalInvestedMarketPrice,
     fetchPortfolioPricesWithCache,
     formatAmount,
     formatPercentage,
-    getPortfolio
+    getBestMargin,
+    getPortfolio,
+    getTop5Margin
 } from '../../utils/utils';
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, LineChart, Legend, Tooltip, BarChart, Bar, XAxis, CartesianGrid, Line, YAxis } from 'recharts';
 import {
@@ -59,6 +61,10 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
     const [userAssets, setUserAssets] = useState<Data[] | null>(investmentData);
     const [portfolio, setPortfolio] = useState<string[]>([]);
     const [info, setInfo] = useState<BRAPIResponse[] | null>(null);
+    const bestProfitMargin = getBestMargin('best', userAssets || []);
+    const worstProfitMargin = getBestMargin('worst', userAssets || []);
+    const top5Assets: IMarginResponse[] = getTop5Margin('best', userAssets || []);
+    console.log(`Top 5 Assets:`, top5Assets);
 
     const totalInvested = userAssets ? calculateTotalInvestedMarketPrice(userAssets, 'all') : 0;
 
@@ -216,8 +222,8 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
                                         <DollarSign className="w-6 h-6 text-white" />
                                     </div>
                                     <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ${isPositivePosition
-                                            ? 'bg-green-100 text-green-700'
-                                            : 'bg-red-100 text-red-700'
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-red-100 text-red-700'
                                         }`}>
                                         {isPositivePosition ? (
                                             <ArrowUpRight className="w-4 h-4" />
@@ -491,35 +497,134 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
 
                 {/* Bottom Row */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300/50 shadow-lg rounded-2xl p-6 relative overflow-hidden group hover:shadow-xl transition-all duration-300">
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-emerald-400/20 to-transparent rounded-full blur-lg" />
-                        <div className="relative z-10 flex items-center justify-center h-full min-h-[120px]">
-                            <div className="text-center">
-                                <TrendingUp className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                                <p className="text-slate-600 font-medium text-sm">Ativo Mais Rentável</p>
-                                <p className="text-slate-500 text-xs">Análise em andamento</p>
+                    {/* Ativo Mais Rentável */}
+                    <div className="bg-white/70 backdrop-blur-sm border border-white/50 shadow-xl rounded-2xl p-6 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
+                        {/* Decorative elements */}
+                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-emerald-400/30 to-green-500/30 rounded-full blur-2xl" />
+                        <div className="absolute bottom-2 left-2 w-8 h-8 bg-gradient-to-tr from-emerald-300/40 to-transparent rounded-full blur-lg" />
+
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 via-emerald-600 to-green-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-300">
+                                        <TrendingUp className="w-7 h-7 text-white" />
+                                    </div>
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-300/30 rounded-full">
+                                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                                        <span className="text-emerald-700 text-xs font-semibold uppercase tracking-wide">Melhor</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                <h3 className="text-slate-700 text-sm font-bold uppercase tracking-wide">Ativo Mais Rentável</h3>
+                                <div className="bg-emerald-50/50 border border-emerald-200/50 rounded-xl p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="font-bold text-lg text-slate-800">{bestProfitMargin.symbol}</span>
+                                        <span className="text-emerald-600 text-xs font-medium uppercase tracking-wide bg-emerald-100 px-2 py-1 rounded-full">
+                                            {bestProfitMargin.category}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-2xl font-bold bg-gradient-to-r from-emerald-700 to-green-700 bg-clip-text text-transparent">
+                                            {formatPercentage(bestProfitMargin.margin, 2)}
+                                        </span>
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <Sparkles className="w-3 h-3" />
+                                            <span className="text-xs font-medium">de lucro</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300/50 shadow-lg rounded-2xl p-6 relative overflow-hidden group hover:shadow-xl transition-all duration-300">
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-red-400/20 to-transparent rounded-full blur-lg" />
-                        <div className="relative z-10 flex items-center justify-center h-full min-h-[120px]">
-                            <div className="text-center">
-                                <TrendingDown className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                                <p className="text-slate-600 font-medium text-sm">Maior Oportunidade</p>
-                                <p className="text-slate-500 text-xs">Análise de risco</p>
+                    {/* Maior Queda */}
+                    <div className="bg-white/70 backdrop-blur-sm border border-white/50 shadow-xl rounded-2xl p-6 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
+                        {/* Decorative elements */}
+                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-red-400/30 to-red-500/30 rounded-full blur-2xl" />
+                        <div className="absolute bottom-2 left-2 w-8 h-8 bg-gradient-to-tr from-red-300/40 to-transparent rounded-full blur-lg" />
+
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-red-500 via-red-600 to-red-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-300">
+                                        <TrendingDown className="w-7 h-7 text-white" />
+                                    </div>
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-300/30 rounded-full">
+                                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                                        <span className="text-red-700 text-xs font-semibold uppercase tracking-wide">Atenção</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                <h3 className="text-slate-700 text-sm font-bold uppercase tracking-wide">Maior Queda</h3>
+                                <div className="bg-red-50/50 border border-red-200/50 rounded-xl p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="font-bold text-lg text-slate-800">{worstProfitMargin.symbol}</span>
+                                        <span className="text-red-600 text-xs font-medium uppercase tracking-wide bg-red-100 px-2 py-1 rounded-full">
+                                            {worstProfitMargin.category}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-2xl font-bold bg-gradient-to-r from-red-700 to-red-700 bg-clip-text text-transparent">
+                                            {formatPercentage(worstProfitMargin.margin, 2)}
+                                        </span>
+                                        <div className="flex items-center gap-1 text-red-600">
+                                            <ArrowDownRight className="w-3 h-3" />
+                                            <span className="text-xs font-medium">de queda</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300/50 shadow-lg rounded-2xl p-6 relative overflow-hidden group hover:shadow-xl transition-all duration-300">
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-amber-400/20 to-transparent rounded-full blur-lg" />
-                        <div className="relative z-10 flex items-center justify-center h-full min-h-[120px]">
-                            <div className="text-center">
-                                <Award className="w-8 h-8 text-amber-500 mx-auto mb-2" />
-                                <p className="text-slate-600 font-medium text-sm">Top 5 Ativos</p>
-                                <p className="text-slate-500 text-xs">Por valor investido</p>
+                    {/* Top 3 Ativos */}
+                    <div className="bg-white/70 backdrop-blur-sm border border-white/50 shadow-xl rounded-2xl p-6 relative overflow-hidden group hover:shadow-2xl transition-all duration-300">
+                        {/* Decorative elements */}
+                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-amber-400/30 to-yellow-500/30 rounded-full blur-2xl" />
+                        <div className="absolute bottom-2 left-2 w-8 h-8 bg-gradient-to-tr from-amber-300/40 to-transparent rounded-full blur-lg" />
+
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-300">
+                                        <Award className="w-7 h-7 text-white" />
+                                    </div>
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-300/30 rounded-full">
+                                        <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+                                        <span className="text-amber-700 text-xs font-semibold uppercase tracking-wide">Top 3</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                <h3 className="text-slate-700 text-sm font-bold uppercase tracking-wide">Melhores Ativos</h3>
+                                <div className="space-y-3">
+                                    {top5Assets.map((asset, index) => (
+                                        <div key={asset.symbol} className="bg-slate-50/50 border border-slate-200/50 rounded-xl p-3 hover:bg-slate-50 transition-colors duration-200">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg flex items-center justify-center text-white text-xs font-bold">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-slate-800 text-sm m-0">{asset.symbol}</p>
+                                                        <p className="text-slate-500 text-xs m-0 uppercase tracking-wide">{asset.category || 'N/A'}</p>
+                                                    </div>
+                                                </div>
+                                                <div className={`px-3 py-1.5 rounded-full text-xs font-semibold ${asset.margin >= 0
+                                                        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                                                        : 'bg-red-100 text-red-700 border border-red-200'
+                                                    }`}>
+                                                    {formatPercentage(asset.margin, 2)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
