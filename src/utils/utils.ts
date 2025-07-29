@@ -213,48 +213,116 @@ export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: 
 };
 
 
-export const getBestMargin = (category: string, portfolio: Data[]): IMarginResponse => {
+export const getBestMargin = (category: string, portfolio: Data[]): IMarginResponse  => {
     if (!portfolio || portfolio.length === 0) {
         console.log("No portfolio data available to calculate margin.");
-        return { symbol: '', margin: 0, category: '' };
+        return { symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 };
     }
 
     const marketData = getDataFromLocalStorage();
-    let profits: { symbol: string; margin: number; category: string }[] = [];
+    let profits: { symbol: string; margin: number; category: string, quantity: number, avgPrice: number }[] = [];
 
     if (!marketData || marketData.length === 0) {
         console.log("No market data available to calculate margin.");
-        return { symbol: '', margin: 0, category: '' };
+        return { symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 };
     }
 
+    // Iterate through the portfolio to calculate profits    
     portfolio.forEach((asset) => {
         // Use bracket notation for property names with special characters
         const symbol = asset["Código de Negociação"] ? asset["Código de Negociação"].replace(/F$/, '') : '';
-        console.log(`getBestMargin : ${symbol}`);
+        // console.log(`getBestMargin : ${symbol}`);
         marketData.forEach((marketAsset) => {
             if (symbol === marketAsset.symbol) {
-                const quantidade = asset["Quantidade"];
-                const precoMedio = asset["Preço Médio"];
-                const profit = marketAsset.regularMarketPrice * quantidade - precoMedio * quantidade;
-                const profitPercent = (profit / (precoMedio * quantidade)) * 100;
+                const quantity = asset["Quantidade"];
+                const avgPrice = asset["Preço Médio"];
+                const profit = marketAsset.regularMarketPrice * quantity - avgPrice * quantity;
+                const profitPercent = (profit / (avgPrice * quantity)) * 100;
 
                 profits.push({
                     symbol: marketAsset.symbol,
                     margin: profitPercent,
-                    category: asset["Tipo"]
+                    category: asset["Tipo"],
+                    quantity: asset["Quantidade"],
+                    avgPrice: avgPrice
                 });
             }
         });
     });
 
     // Find the best margin (highest)
-    const best = profits.reduce((prev, current) => (prev.margin > current.margin ? prev : current), { symbol: '', margin: -Infinity, category: '' });
+    const best = profits.reduce((prev, current) => (prev.margin > current.margin ? prev : current), { symbol: '', margin: -Infinity, category: '', quantity: 0, avgPrice: 0 });
+    const worst = profits.reduce((prev, current) => (prev.margin < current.margin ? prev : current), { symbol: '', margin: Infinity, category: '', quantity: 0, avgPrice: 0 });
 
     // If no profits found, return default object
     if (best.margin === -Infinity) {
-        return { symbol: '', margin: 0, category: '' };
+        return { symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 };
     }
 
-    return best;
+    if ( category == 'worst' )
+        return worst;
+    else if ( category == 'best' )
+        return best;
+    else{
+        console.log("Invalid category specified for getBestMargin. Returning default.");
+        return { symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 };
+    }
+
+
 }
 
+
+export const getTop5Margin = (category: string, portfolio: Data[]): IMarginResponse[] => {
+    if (!portfolio || portfolio.length === 0) {
+        console.log("No portfolio data available to calculate margin.");
+        return [{ symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 }];
+    }
+
+    const marketData = getDataFromLocalStorage();
+    let profits: IMarginResponse[] = [];
+
+    if (!marketData || marketData.length === 0) {
+        console.log("No market data available to calculate top 5 margins.");
+        return [{ symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 }];
+    }
+
+    // Iterate through the portfolio to calculate profits    
+    portfolio.forEach((asset) => {
+        const symbol = asset["Código de Negociação"] ? asset["Código de Negociação"].replace(/F$/, '') : '';
+        marketData.forEach((marketAsset) => {
+            if (symbol === marketAsset.symbol) {
+                const quantity = asset["Quantidade"];
+                const avgPrice = asset["Preço Médio"];
+                const profit = marketAsset.regularMarketPrice * quantity - avgPrice * quantity;
+                const profitPercent = (profit / (avgPrice * quantity)) * 100;
+
+                profits.push({
+                    symbol: marketAsset.symbol,
+                    margin: profitPercent,
+                    category: asset["Tipo"],
+                    quantity: asset["Quantidade"],
+                    avgPrice: avgPrice
+                });
+            }
+        });
+    });
+
+    if (profits.length === 0) {
+        return [{ symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 }];
+    }
+
+    if (category === 'best') {
+        // Sort descending and return top 5
+        return profits
+            .sort((a, b) => b.margin - a.margin)
+            .slice(0, 3);
+    } else if (category === 'worst') {
+        // Sort ascending and return top 5
+        return profits
+            .sort((a, b) => a.margin - b.margin)
+            .slice(0, 3);
+    } else {
+        console.log("Invalid category specified for getTop5Margin. Returning default.");
+        return [{ symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 }];
+    }
+}
