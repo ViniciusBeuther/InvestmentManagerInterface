@@ -313,7 +313,7 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
                             <div className="relative z-10">
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-14 h-14 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-300">
+                                        <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-300">
                                             <DollarSign className="w-7 h-7 text-white" />
                                         </div>
                                         <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-300/30 rounded-full">
