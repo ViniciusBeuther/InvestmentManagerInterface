@@ -5,7 +5,8 @@ import {
   PieChart, 
   TrendingUp,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  FileText
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -31,6 +32,12 @@ const Sidebar = () => {
       label: "Distribuição de Ativos",
       icon: PieChart,
       description: "Análise de alocação"
+    },
+    {
+      path: "/IR",
+      label: "Declaração de IR",
+      icon: FileText,
+      "description": "Documentação fiscal"
     }
   ];
 
