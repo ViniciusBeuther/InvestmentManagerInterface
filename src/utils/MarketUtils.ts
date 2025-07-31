@@ -1,5 +1,5 @@
 import { BRAPIResponse, Data } from "../types/data";
-import { formatAmount, formatPercentage, getDataFromLocalStorage } from "./utils";
+import { formatAmount, formatPercentage, getCompletePortfolio, getDataFromLocalStorage } from "./utils";
 import treasureLogo from '../../public/treasureLogo.png';
 import FIILogo from '../../public/FIILogo.png';
 
@@ -64,4 +64,21 @@ export class MarketUtils {
             return `${formatPercentage(profitPercent, 2)} (${formatAmount(profit)})`
         
     }
+
+    
+public async getFullProfitOrLossByCategory(): Promise<number> {
+    const data: Data  = await getCompletePortfolio();
+    if (!data) return 0.00;
+
+    let totalProfitOrLoss = 0;
+
+    data.forEach((asset) => {
+        const invested = asset.totalInvested ?? 0;
+        const current = asset.currentValue ?? 0;
+        totalProfitOrLoss += current - invested;
+    });
+
+    return totalProfitOrLoss;
+}
+
 };
