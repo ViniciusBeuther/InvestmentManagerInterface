@@ -5,6 +5,7 @@ import { Data } from "./types/data.ts";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/Dashboard.tsx";
 import Distribution from "./pages/Distribution/Distribution.tsx";
+import IR from "./pages/IR/IR.tsx";
 
 const App: React.FC = () => {
   const API_URL: string = "http://127.0.0.1:8000/wallet";
@@ -52,6 +53,10 @@ const App: React.FC = () => {
     {
       path: "/distribution",
       element: <Distribution />
+    },
+    {
+      path: "/IR",
+      element: <IR />
     }
   ]);
 
