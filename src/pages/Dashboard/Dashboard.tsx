@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './index.css';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import { BRAPIResponse, Data, dividendPerformanceInterface, IMarginResponse, totalsInterface } from '../../types/data';
+import { Data, dividendPerformanceInterface, IMarginResponse, totalsInterface } from '../../types/data';
 import {
     calculateTotalInvestedMarketPrice,
-    fetchPortfolioPricesWithCache,
     formatAmount,
     formatPercentage,
     getBestMargin,
-    getPortfolio,
     getTop5Margin
 } from '../../utils/utils';
-import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, LineChart, Legend, Tooltip, BarChart, Bar, XAxis, CartesianGrid, Line, YAxis } from 'recharts';
+import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, LineChart, Tooltip, XAxis, CartesianGrid, Line, YAxis } from 'recharts';
 import {
     TrendingUp,
     TrendingDown,
@@ -45,7 +43,7 @@ interface DistributionResponse {
     distribution: DistributionData[];
 }
 
-const Dashboard = ({ investmentData }: DashboardProps) => {
+const Dashboard = ( props: DashboardProps ) => {
     const year = new Date().getFullYear();
     const month = new Date().getMonth();
 
@@ -54,13 +52,11 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
     const distributionAPIendpoint = 'http://localhost:8000/wallet/distribution';
     const monthlyContributionAPIEndpoint = 'http://localhost:8000/wallet/contributionHistory';
 
-    const [totalData, setTotalDate] = useState<totalsInterface | null>(null);
+    const [totalData, setTotalData] = useState<totalsInterface | null>(null);
     const [dividendPerformanceData, setDividendPerformanceData] = useState<dividendPerformanceInterface | null>(null);
     const [distributionData, setDistributionData] = useState<DistributionResponse | null>(null);
     const [monthlyContributionData, setMonthlyContributionData] = useState<IMonthlyContribution[] | null>(null);
-    const [userAssets, setUserAssets] = useState<Data[] | null>(investmentData);
-    const [portfolio, setPortfolio] = useState<string[]>([]);
-    const [info, setInfo] = useState<BRAPIResponse[] | null>(null);
+    const userAssets: Data[] = props.investmentData;
     const bestProfitMargin = getBestMargin('best', userAssets || []);
     const worstProfitMargin = getBestMargin('worst', userAssets || []);
     const top5Assets: IMarginResponse[] = getTop5Margin('best', userAssets || []);
@@ -78,20 +74,9 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
     useEffect(() => {
         fetch(totalAPIendpoint)
             .then((res) => res.json())
-            .then(setTotalDate)
+            .then(setTotalData)
             .catch((err) => console.error('Erro ao buscar dados totais:', err));
     }, []);
-
-    useEffect(() => {
-        getPortfolio()
-            .then(setPortfolio)
-            .catch((err) => console.error('Erro ao buscar portfólio:', err));
-    }, []);
-
-    useEffect(() => {
-        if (portfolio.length === 0) return;
-        fetchPortfolioPricesWithCache(portfolio).then(setInfo);
-    }, [portfolio]);
 
     useEffect(() => {
         fetch(dividendPerformanceAPIendpoint)
@@ -161,9 +146,9 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
     })) || [];
 
     // Custom tooltip for pie chart
-    const CustomTooltip = ({ active, payload }: any) => {
-        if (active && payload && payload.length) {
-            const data = payload[0].payload;
+    const CustomTooltip = ( props: any ) => {
+        if ( props.active && props.payload ) {
+            const data = props.payload[0].payload;
             return (
                 <div className="bg-white/90 backdrop-blur-sm border border-white/50 shadow-xl rounded-xl p-4">
                     <p className="font-semibold text-slate-800">{data.name}</p>
@@ -372,8 +357,8 @@ const Dashboard = ({ investmentData }: DashboardProps) => {
                                                 paddingAngle={2}
                                                 dataKey="value"
                                             >
-                                                {chartData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                {chartData.map(( entry ) => (
+                                                    <Cell key={`cell-${entry.name}`} fill={entry.color} />
                                                 ))}
                                             </Pie>
                                             <Tooltip content={<CustomTooltip />} />

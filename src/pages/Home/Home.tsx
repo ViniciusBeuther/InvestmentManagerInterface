@@ -3,11 +3,11 @@ import { Data } from '../../types/data.ts'
 import '../../index.css'
 import HomeGrid from '../../components/HomeGrid/HomeGrid.tsx'
 
-interface homePropInterface {
+interface IHomePropInterface {
   investmentData: Data[]
 }
 
-const Home: React.FC<homePropInterface> = ({ investmentData }) => {
+const Home: React.FC<IHomePropInterface> = ({ investmentData }) => {
   return (
     <section className='flex flex-col h-full'>
         <HomeGrid assets={investmentData} />

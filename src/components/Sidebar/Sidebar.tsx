@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { 
   BarChart3, 
   Wallet, 
@@ -11,7 +10,6 @@ import {
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
-  const [selected, setSelected] = useState("");
   const url = window.location.href.split("/")[3];
 
   const navigationItems = [

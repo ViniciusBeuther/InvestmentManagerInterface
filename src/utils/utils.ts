@@ -39,9 +39,8 @@ export const fetchPortfolioPrices = async (portfolio: BRAPIResponse[]) => {
 
     if (!portfolio || portfolio.length === 0) return null;
 
-    for (let i = 0; i < portfolio.length; i++) {
-        const cleaned = portfolio[i].symbol.replace(/F$/, '');
-        //            console.log('Fetching for:', cleaned);
+    for ( let portfolioObj of portfolio ) {
+        const cleaned = portfolioObj.symbol.replace(/F$/, '');
 
         try {
             const response = await fetch(`${brapiConsultRoute}/${cleaned}`, {
@@ -53,7 +52,6 @@ export const fetchPortfolioPrices = async (portfolio: BRAPIResponse[]) => {
             });
 
             const data = await response.json();
-            // console.log('BRAPI Data:', data.results[0]);
 
             if (data.results && data.results.length > 0) {
                 results.push(data.results[0]);
@@ -65,7 +63,6 @@ export const fetchPortfolioPrices = async (portfolio: BRAPIResponse[]) => {
         await new Promise(resolve => setTimeout(resolve, 500)); // delay 1 second
     }
 
-    // console.log('Info Array:', results);
     return results;
 }
 
@@ -78,9 +75,9 @@ export const getPortfolio = async () => {
         const response = await fetch("http://localhost:8000/wallet/assets/all");
         const data = await response.json();
         const filteredPortfolio = data.assets
-            .filter((item: string) => !item.match('.*Tesouro.*'))
+            //.filter((item: string) => !item.match('.*Tesouro.*'))
+            .filter((item: string) => ! /item/.exec('.*Tesouro.*'))
             .map((item: string) => item.replace('F$', ''));
-        // console.log("Portfolio:", filteredPortfolio);
         return filteredPortfolio;
     } catch (error) {
         console.error("Error fetching portfolio:", error);
@@ -115,9 +112,8 @@ export const fetchPortfolioPricesWithCache = async (portfolio: string[]): Promis
     const brapiConsultRoute: string = import.meta.env.VITE_BRAPI_API_CONSULT_ROUTE;
     const key: string = import.meta.env.VITE_BRAPI_API_KEY;
 
-    for (let i = 0; i < portfolio.length; i++) {
-        const cleaned = portfolio[i].replace(/F$/, '');
-        // console.log('Fetching for:', cleaned);
+    for ( let portfolioObj of portfolio ) {
+        const cleaned = portfolioObj.replace(/F$/, '');
 
         try {
             const response = await fetch(`${brapiConsultRoute}/${cleaned}`, {
@@ -129,7 +125,6 @@ export const fetchPortfolioPricesWithCache = async (portfolio: string[]): Promis
             });
 
             const data = await response.json();
-            // console.log('BRAPI Data:', data.results[0]);
 
             if (data.results && data.results.length > 0) {
                 results.push(data.results[0]);
@@ -155,7 +150,7 @@ export const fetchPortfolioPricesWithCache = async (portfolio: string[]): Promis
  */
 export const getDataFromLocalStorage = (): BRAPIResponse[] => {
     const cachedData = localStorage.getItem(import.meta.env.VITE_CACHE_KEY);
-    // console.log('Cached Data:', JSON.parse(cachedData || ''));
+    
     if (cachedData) {
         try {
             return JSON.parse(cachedData);
@@ -176,7 +171,7 @@ export const getCompletePortfolio = async () => {
         const data = await response.json();
         const filteredPortfolio : Data = data.assets
             .map((item: string) => item.replace('F$', ''));
-        // console.log("Portfolio:", filteredPortfolio);
+        
         return filteredPortfolio;
     } catch (error) {
         console.error("Error fetching portfolio:", error);
@@ -193,7 +188,7 @@ export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: 
     
     let total = 0.00;
     if (!marketData || !portfolio) return 0;
-    // console.log(`data totals: ${marketData.at(0)?.symbol} - ${portfolio.at(5)?.["Código de Negociação"].replace(/F$/, '')}`);
+    
     for (const asset of portfolio) {
         const symbol = asset['Código de Negociação'].replace(/F$/, '');
         const marketAsset = marketData.find((value) => value.symbol === symbol);
@@ -207,7 +202,7 @@ export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: 
         } 
     }
 
-    //console.log(`Total invested in market price for category ${category}: ${total}`);
+    
 
     return total;
 };
@@ -231,7 +226,7 @@ export const getBestMargin = (category: string, portfolio: Data[]): IMarginRespo
     portfolio.forEach((asset) => {
         // Use bracket notation for property names with special characters
         const symbol = asset["Código de Negociação"] ? asset["Código de Negociação"].replace(/F$/, '') : '';
-        // console.log(`getBestMargin : ${symbol}`);
+        
         marketData.forEach((marketAsset) => {
             if (symbol === marketAsset.symbol) {
                 const quantity = asset["Quantidade"];
