@@ -5,4 +5,5 @@ interface ImportMetaEnv {
     readonly VITE_CACHE_KEY: string;
     readonly VITE_CACHE_TIMESTAMP_KEY: string;
     readonly VITE_CACHE_DURATION: number; // in milliseconds
+    readonly VITE_API_URL_WALLET: string;
 }
