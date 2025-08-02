@@ -32,7 +32,7 @@ export const formatPercentage = (percentage: number, maxDecimalDigits: number = 
  * @param portfolio portfolio list fetched from the excel spreadsheet
  * @returns a list of BrapiObjects containing the real data amounts for each asset in the portfolio based on B3
  */
-export const fetchPortfolioPrices = async (portfolio: BRAPIResponse[]) => {
+export const fetchPortfolioPrices = async (portfolio: Data[]) => {
     const results = [];
     const brapiConsultRoute: string = import.meta.env.VITE_BRAPI_API_CONSULT_ROUTE;
     const key: string = import.meta.env.VITE_BRAPI_API_KEY;
@@ -40,7 +40,7 @@ export const fetchPortfolioPrices = async (portfolio: BRAPIResponse[]) => {
     if (!portfolio || portfolio.length === 0) return null;
 
     for ( let portfolioObj of portfolio ) {
-        const cleaned = portfolioObj.symbol.replace(/F$/, '');
+        const cleaned = portfolioObj["Código de Negociação"].replace(/F$/, '');
 
         try {
             const response = await fetch(`${brapiConsultRoute}/${cleaned}`, {
@@ -163,7 +163,7 @@ export const getDataFromLocalStorage = (): BRAPIResponse[] => {
 
 /**
  * the complete portfolio fetched from the backend, it includes tesouro assets and does not remove the 'F$' suffix
- * @returns Data[] - an array of Data objects representing the complete portfolio
+ * @returns Data[] - an array of Data objects representing the complete portfolio (only stock codes)
  */
 export const getCompletePortfolio = async () => {
     try {
