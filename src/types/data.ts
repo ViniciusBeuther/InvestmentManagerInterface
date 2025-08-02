@@ -3,7 +3,7 @@ export interface Data{
   "Quantidade": number,
   "Valor": number,
   "Preço Médio": number,
-  "Tipo": string,
+  "Tipo": string
 }
 
 export interface totalsInterface {
