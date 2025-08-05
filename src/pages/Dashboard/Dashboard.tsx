@@ -435,7 +435,7 @@ const Dashboard = ( props: DashboardProps ) => {
 
                                             <Tooltip
                                                 content={({ active, payload, label }) => {
-                                                    if (active && payload && payload.length) {
+                                                    if (active && payload?.length) {
                                                         return (
                                                             <div className="bg-white/95 backdrop-blur-sm border border-white/50 shadow-xl rounded-xl p-3">
                                                                 <p className="font-semibold text-slate-800 text-sm">{label}</p>

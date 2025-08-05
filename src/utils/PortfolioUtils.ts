@@ -7,7 +7,7 @@ class PortfolioUtils {
     // constructor to initialize the class with async start method
     public start = async () => {
         await this.initialize();
-        await this.setStringListOfSymbols();
+        this.setStringListOfSymbols();
     }
 
     protected initialize = async () => {
@@ -43,7 +43,6 @@ class PortfolioUtils {
         if (this.data.length == 0) return;
 
         this.data.forEach(( item:Data ) => this.symbolsStringList.push( item["Código de Negociação"] ) );
-        //console.log("PortfolioUtils.getStringListOfSymbols: ", this.getStringListOfSymbols());
     }
 
 
