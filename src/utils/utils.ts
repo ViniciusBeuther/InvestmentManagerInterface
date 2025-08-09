@@ -89,16 +89,18 @@ export const getPortfolio = async () => {
  * @param portfolio - Array of portfolio asset symbols
  * @returns Array of BRAPIResponse objects or null if no data
  */
-export const fetchPortfolioPricesWithCache = async (portfolio: string[]): Promise<BRAPIResponse[] | null> => {
+export const fetchPortfolioPricesWithCache = async (): Promise<BRAPIResponse[] | null> => {
+    const API_URL = "http://127.0.0.1:8000/wallet";
+
     const CACHE_KEY = import.meta.env.VITE_CACHE_KEY;
     const CACHE_TIMESTAMP_KEY = import.meta.env.VITE_CACHE_TIMESTAMP_KEY;
-    const CACHE_DURATION = import.meta.env.VITE_CACHE_DURATION;
+    const CACHE_DURATION = Number(import.meta.env.VITE_CACHE_DURATION); // ensure number
 
     const now = Date.now();
     const cached = localStorage.getItem(CACHE_KEY);
     const cachedTimestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
 
-    // Return cached data if it's valid
+    // If we have valid cache, return it
     if (cached && cachedTimestamp && now - parseInt(cachedTimestamp) < CACHE_DURATION) {
         try {
             return JSON.parse(cached);
@@ -107,13 +109,22 @@ export const fetchPortfolioPricesWithCache = async (portfolio: string[]): Promis
         }
     }
 
-    // Fetch new data if not cached or cache expired
-    const results: BRAPIResponse[] = [];
-    const brapiConsultRoute: string = import.meta.env.VITE_BRAPI_API_CONSULT_ROUTE;
-    const key: string = import.meta.env.VITE_BRAPI_API_KEY;
+    let portfolio: Data[] = [];
 
-    for ( let portfolioObj of portfolio ) {
-        const cleaned = portfolioObj.replace(/F$/, '');
+    try {
+        const response = await fetch(API_URL);
+        portfolio = await response.json();
+    } catch (error) {
+        console.error("Error fetching portfolio from backend:", error);
+        return null;
+    }
+
+    const results: BRAPIResponse[] = [];
+    const brapiConsultRoute = import.meta.env.VITE_BRAPI_API_CONSULT_ROUTE;
+    const key = import.meta.env.VITE_BRAPI_API_KEY;
+
+    for (const portfolioObj of portfolio) {
+        const cleaned = portfolioObj["Código de Negociação"].replace(/F$/, '');
 
         try {
             const response = await fetch(`${brapiConsultRoute}/${cleaned}`, {
@@ -133,15 +144,17 @@ export const fetchPortfolioPricesWithCache = async (portfolio: string[]): Promis
             console.error('Error fetching BRAPI data:', error);
         }
 
-        await new Promise(resolve => setTimeout(resolve, 500)); // delay 500ms
+        // Delay 500ms to avoid hitting rate limits
+        await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    // Save to localStorage
+    // Save fresh results to cache
     localStorage.setItem(CACHE_KEY, JSON.stringify(results));
     localStorage.setItem(CACHE_TIMESTAMP_KEY, now.toString());
 
     return results;
 };
+
 
 
 /**
@@ -157,6 +170,8 @@ export const getDataFromLocalStorage = (): BRAPIResponse[] => {
         } catch (error) {
             console.error("Failed to parse cached data:", error);
         }
+    } else {
+        fetchPortfolioPricesWithCache();
     }
     return [];
 }
