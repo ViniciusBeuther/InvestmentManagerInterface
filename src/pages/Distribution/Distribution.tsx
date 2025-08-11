@@ -8,6 +8,8 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import { fetchPortfolioPricesWithCache, formatAmount, getCompletePortfolio } from '../../utils/utils';
 import PortfolioUtils from '../../utils/PortfolioUtils';
 import { MarketUtils } from '../../utils/MarketUtils';
+import TotalInvestedCard from '../../components/Cards/TotalInvestedCard';
+import CurrentTotalInvestedCard from '../../components/Cards/CurrentTotalInvestedCard';
 
 // Mock data structure based on your types
 interface Data {
@@ -31,9 +33,12 @@ interface Distribution {
   profitLoss: number;
 }
 
+interface IDistributionProps {
+  investmentData: Data[];
+}
 
 
-const Distribution: React.FC = () => {
+const Distribution: React.FC<IDistributionProps> = ( props: IDistributionProps ) => {
   const [loading, setLoading] = useState(false);
   const Market = new MarketUtils();
   const [completePortfolio, setCompletePortfolio] = useState<Data[]>();  
@@ -68,7 +73,6 @@ const Distribution: React.FC = () => {
       <section className="h-full flex">
         <article className="w-[20%]">
           <Sidebar />
-          <div className="bg-gray-200 h-full"></div>
         </article>
         <article className='bg-gray-50 w-[80%] p-5'>
           <div className="flex items-center justify-center h-full">
@@ -86,7 +90,6 @@ const Distribution: React.FC = () => {
     <section className="h-full flex">
       <article className="w-[20%]">
         <Sidebar />
-        <div className="bg-gray-200 h-full"></div>
       </article>
       <article className='bg-gray-50 w-[80%] p-5 overflow-y-auto'>
         <div className="max-w-7xl mx-auto">
@@ -105,17 +108,7 @@ const Distribution: React.FC = () => {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Wallet className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Valor Investido</p>
-                  <p className="text-xl font-bold text-gray-900">{formatAmount( distributionData.total )}</p>
-                </div>
-              </div>
-            </div>
+            <TotalInvestedCard />
 
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <div className="flex items-center gap-3">
@@ -161,9 +154,10 @@ const Distribution: React.FC = () => {
               </div>
             </div>
           </div>
-
-          
-            </div>
+          </div>
+          <div>
+            <CurrentTotalInvestedCard portfolioList={props.investmentData} />
+          </div>
       </article>
     </section>
   );
