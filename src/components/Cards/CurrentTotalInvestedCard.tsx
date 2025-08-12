@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Data } from '../../types/data';
-import { calculateTotalInvestedMarketPrice } from '../../utils/utils';
+import { calculateTotalInvestedMarketPrice, formatAmount } from '../../utils/utils';
+import { DollarSign } from 'lucide-react';
 
 interface ICurrentTotalInvestedCardProps {
     portfolioList: Data[];
@@ -20,9 +21,17 @@ const CurrentTotalInvestedCard = ( props: ICurrentTotalInvestedCardProps ) => {
         return <p>loading...</p>
 
     return (
-        <div>
-            { total }
-        </div>
+            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Valor Atual</p>
+                  <p className="text-xl font-bold text-gray-900">{formatAmount( total )}</p>
+                </div>
+              </div>
+            </div>
     )
 }
 
