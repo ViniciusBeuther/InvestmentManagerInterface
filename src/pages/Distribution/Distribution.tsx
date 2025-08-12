@@ -10,6 +10,7 @@ import PortfolioUtils from '../../utils/PortfolioUtils';
 import { MarketUtils } from '../../utils/MarketUtils';
 import TotalInvestedCard from '../../components/Cards/TotalInvestedCard';
 import CurrentTotalInvestedCard from '../../components/Cards/CurrentTotalInvestedCard';
+import ProfitLossCard from '../../components/Cards/ProfitLossCard';
 
 // Mock data structure based on your types
 interface Data {
@@ -111,27 +112,7 @@ const Distribution: React.FC<IDistributionProps> = ( props: IDistributionProps )
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <TotalInvestedCard />
             <CurrentTotalInvestedCard portfolioList={props.investmentData} />
-
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                  true ? 'bg-green-100' : 'bg-red-100'
-                }`}>
-                  {true ? (
-                    <TrendingUp className={`w-5 h-5 ${true ? 'text-green-600' : 'text-red-600'}`} />
-                  ) : (
-                    <TrendingDown className={`w-5 h-5 ${true ? 'text-green-600' : 'text-red-600'}`} />
-                  )}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Lucro/Prejuízo</p>
-                  <p className={`text-xl font-bold ${true ? 'text-green-600' : 'text-red-600'}`}>
-                    {formatAmount(-200)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
+            <ProfitLossCard />
             <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
