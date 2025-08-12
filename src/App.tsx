@@ -52,7 +52,7 @@ const App: React.FC = () => {
     },
     {
       path: "/distribution",
-      element: <Distribution />
+      element: <Distribution investmentData={data} />
     },
     {
       path: "/IR",

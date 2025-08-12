@@ -216,9 +216,7 @@ export const calculateTotalInvestedMarketPrice = ( portfolio: Data[], category: 
             total += marketAsset.regularMarketPrice * asset.Quantidade;
         } 
     }
-
     
-
     return total;
 };
 
