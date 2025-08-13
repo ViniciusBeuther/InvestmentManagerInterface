@@ -11,6 +11,7 @@ import { MarketUtils } from '../../utils/MarketUtils';
 import TotalInvestedCard from '../../components/Cards/TotalInvestedCard';
 import CurrentTotalInvestedCard from '../../components/Cards/CurrentTotalInvestedCard';
 import ProfitLossCard from '../../components/Cards/ProfitLossCard';
+import AssetsQuantityCard from '../../components/Cards/AssetsQuantityCard';
 
 // Mock data structure based on your types
 interface Data {
@@ -113,17 +114,7 @@ const Distribution: React.FC<IDistributionProps> = ( props: IDistributionProps )
             <TotalInvestedCard />
             <CurrentTotalInvestedCard portfolioList={props.investmentData} />
             <ProfitLossCard userAssets={props.investmentData} />
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Target className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total de Ativos</p>
-                  <p className="text-xl font-bold text-gray-900">22</p>
-                </div>
-              </div>
-            </div>
+            <AssetsQuantityCard userAssets={props.investmentData} />
           </div>
           </div>
       </article>

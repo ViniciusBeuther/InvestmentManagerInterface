@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { formatAmount } from "../../utils/utils";
-import { Wallet } from "lucide-react";
+import { RefreshCcw, Wallet } from "lucide-react";
 
 interface ITotalEndPointResponse {
     totalInvestido: number;
@@ -18,8 +18,21 @@ const TotalInvestedCard = () => {
             .catch((err) => console.error('Erro ao buscar dados totais:', err));
     }, []);
 
-    if (!totalData)
-        return <p>loading total invested...</p>
+    // save the variable difference to show the difference between the total invested and the current value
+    let content: JSX.Element;
+
+    if (!totalData) {
+        content =
+            <div className="flex items-center gap-3">
+                <RefreshCcw className="w-6 h-6 animate-spin text-blue-600" />
+                <span className="text-lg font-medium text-gray-700">Carregando dados da carteira...</span>
+            </div>
+    } else {
+        content = <div>
+            <p className="text-sm font-medium text-gray-600">Valor Investido</p>
+            <p className="text-xl font-bold text-gray-900">{formatAmount(totalData.totalInvestido)}</p>
+        </div>
+    }
 
     return (
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
@@ -28,8 +41,7 @@ const TotalInvestedCard = () => {
                     <Wallet className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                    <p className="text-sm font-medium text-gray-600">Valor Investido</p>
-                    <p className="text-xl font-bold text-gray-900">{ formatAmount( totalData.totalInvestido ) }</p>
+                    { content }
                 </div>
             </div>
         </div>
