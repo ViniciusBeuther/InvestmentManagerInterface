@@ -32,7 +32,7 @@ const Sidebar = () => {
       description: "Análise de alocação"
     },
     {
-      path: "/IR",
+      path: "/reports",
       label: "Declaração de IR",
       icon: FileText,
       "description": "Documentação fiscal"
