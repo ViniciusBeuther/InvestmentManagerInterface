@@ -1,7 +1,8 @@
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import { RefreshCcw, TrendingDown, TrendingUp } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { calculateTotalInvestedMarketPrice, formatAmount } from '../../utils/utils'
 import { Data } from '../../types/data';
+import LoadingWallet from '../Loading/LoadingWallet';
 
 interface ITotalEndPointResponse {
     totalInvestido: number;
@@ -12,11 +13,12 @@ interface IProfitLossCardProps {
     userAssets: Data[]
 }
 
-const ProfitLossCard: React.FC<IProfitLossCardProps> = ( props ) => {
+const ProfitLossCard: React.FC<IProfitLossCardProps> = (props) => {
     const totalAPIendpoint: string = 'http://localhost:8000/wallet/totals';
     const [totalData, setTotalData] = useState<ITotalEndPointResponse>();
-    const totalInvested = props.userAssets ? calculateTotalInvestedMarketPrice( props.userAssets, 'all') : 0;
+    const totalInvested = props.userAssets ? calculateTotalInvestedMarketPrice(props.userAssets, 'all') : 0;
     const [difference, setDifference] = useState<number>(0);
+    let content: JSX.Element;
 
     useEffect(() => {
         fetch(totalAPIendpoint)
@@ -26,13 +28,13 @@ const ProfitLossCard: React.FC<IProfitLossCardProps> = ( props ) => {
     }, []);
 
     useEffect(() => {
-        if( totalData?.totalInvestido != undefined && totalData?.totalInvestido != null ) {
-            setDifference( totalInvested - totalData.totalInvestido );
+        if (totalData?.totalInvestido != undefined && totalData?.totalInvestido != null) {
+            setDifference(totalInvested - totalData.totalInvestido);
         }
     }, [totalData, totalInvested]);
 
-    return (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+    if (totalData) {
+        content = (
             <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${difference >= 0 ? 'bg-green-100' : 'bg-red-100'
                     }`}>
@@ -49,6 +51,14 @@ const ProfitLossCard: React.FC<IProfitLossCardProps> = ( props ) => {
                     </p>
                 </div>
             </div>
+        );
+    } else 
+        content = <LoadingWallet />;
+    
+
+    return (
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+            { content }
         </div>
     )
 }

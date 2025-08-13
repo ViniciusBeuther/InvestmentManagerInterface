@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { formatAmount } from "../../utils/utils";
 import { RefreshCcw, Wallet } from "lucide-react";
+import LoadingWallet from "../Loading/LoadingWallet";
 
 interface ITotalEndPointResponse {
     totalInvestido: number;
@@ -22,11 +23,7 @@ const TotalInvestedCard = () => {
     let content: JSX.Element;
 
     if (!totalData) {
-        content =
-            <div className="flex items-center gap-3">
-                <RefreshCcw className="w-6 h-6 animate-spin text-blue-600" />
-                <span className="text-lg font-medium text-gray-700">Carregando dados da carteira...</span>
-            </div>
+        content = <LoadingWallet />;
     } else {
         content = <div>
             <p className="text-sm font-medium text-gray-600">Valor Investido</p>
