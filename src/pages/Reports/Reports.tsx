@@ -13,7 +13,11 @@ import {
 } from 'lucide-react';
 import React, { useState } from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import { Data } from '../../types/data';
+import { Data, ICompleteAssetReportResponse, ICompleteDividendReportResponse } from '../../types/data';
+import ReportUtils from '../../utils/ReportUtils';
+import { jsPDF } from 'jspdf'
+import { autoTable } from 'jspdf-autotable'
+
 
 interface IReportsProps {
   // Add any props you might need later
@@ -29,6 +33,9 @@ const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
   const [selectedReportType, setSelectedReportType] = useState<ReportType>('complete');
   const [selectedPeriod, setSelectedPeriod] = useState<ReportPeriod>('yearly');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const reportUtils = new ReportUtils();
+  const [fullWalletData, setFullWalletData] = useState<ICompleteAssetReportResponse[]>([]);
+  const [fullDividendData, setFullDividendData] = useState<ICompleteDividendReportResponse[]>([]);
 
   // Generate year options (current year and past 10 years)
   const yearOptions = Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - i);
@@ -86,9 +93,20 @@ const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
     setIsGenerating(true);
     
     // Simulate report generation
-    setTimeout(() => {
+    setTimeout(async () => {
       setIsGenerating(false);
       // Here you would trigger the actual PDF generation and download
+      
+      // fetching data from API
+      const data = await reportUtils.getWalletCompleteForYear(selectedYear);
+      const dividendData = await reportUtils.getCompleteDividendsForYear(selectedYear);
+
+      // set states
+      setFullDividendData(dividendData);
+      setFullWalletData(data);
+
+      reportUtils.generatePDFReport();
+      
     }, 3000);
   };
 

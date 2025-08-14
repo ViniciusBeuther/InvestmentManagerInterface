@@ -41,3 +41,17 @@ export interface IMarginResponse {
   "quantity": number,
   "avgPrice": number,
 }
+
+export interface ICompleteAssetReportResponse {
+  "Código de Negociação": string,
+  "Quantidade": number,
+  "Valor": number,
+  "Preço Médio": number,
+  "Tipo": string
+}
+
+export interface ICompleteDividendReportResponse {
+  "asset" : string,
+  "amount"  : number,
+  "category" : string,
+}
