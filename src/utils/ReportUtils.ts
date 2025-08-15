@@ -1,12 +1,14 @@
 import jsPDF from "jspdf";
 import { ICompleteAssetReportResponse, ICompleteDividendReportResponse } from "../types/data";
 import autoTable from "jspdf-autotable";
+import { formatAmount } from "./utils";
 
 class ReportUtils {
     private readonly WALLET_COMPLETE_ENDPOINT: string;
     private readonly DIVIDENDS_COMPLETE_ENDPOINT: string;
     private readonly TABLE_HEADER_ASSETS: string[];
     private readonly TABLE_HEADER_DIVIDENDS: string[];
+    protected reportYear: number;
     protected assetItems: ICompleteAssetReportResponse[] = [];
     protected dividendItems: ICompleteDividendReportResponse[] = [];
 
@@ -28,6 +30,7 @@ class ReportUtils {
 
         this.assetItems = [];
         this.dividendItems = [];
+        this.reportYear = new Date().getFullYear();
     }
 
     /**
@@ -41,6 +44,7 @@ class ReportUtils {
         const response = await fetch(`${this.WALLET_COMPLETE_ENDPOINT}${year}`);
         const data = await response.json();
         this.assetItems = data; // Store the fetched data in the class property
+        this.reportYear = year;
 
         // console.log("Complete Wallet Data for Year:", year, data);
         return data;
@@ -57,6 +61,7 @@ class ReportUtils {
         const response = await fetch(`${this.DIVIDENDS_COMPLETE_ENDPOINT}${year}`);
         const data = await response.json();
         this.dividendItems = data; // Store the fetched data in the class property
+        this.reportYear = year;
 
         //console.log("Complete dividend Data for Year:", year, data);
         return data;
@@ -66,13 +71,13 @@ class ReportUtils {
         let pdfDoc = new jsPDF();
 
         autoTable(pdfDoc, {
-            head: [ this.TABLE_HEADER_ASSETS ],
+            head: [this.TABLE_HEADER_ASSETS],
             body: [
                 ...this.assetItems.map(item => [
                     item["Código de Negociação"],
                     item.Quantidade,
-                    item.Valor,
-                    item["Preço Médio"],
+                    formatAmount(item.Valor),
+                    formatAmount(item["Preço Médio"]),
                     item.Tipo
                 ])
             ]
