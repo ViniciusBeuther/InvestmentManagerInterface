@@ -97,13 +97,15 @@ const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
       setIsGenerating(false);
       // Here you would trigger the actual PDF generation and download
       
-      // fetching data from API
-      const data = await reportUtils.getWalletCompleteForYear(selectedYear);
-      const dividendData = await reportUtils.getCompleteDividendsForYear(selectedYear);
-
+      // fetching data from API and storing it in the class attributes for generating the reports correctly
+      // using private and internal methods
+      await reportUtils.getWalletCompleteForYear(selectedYear);
+      await reportUtils.getCompleteDividendsForYear(selectedYear);
+      await reportUtils.getCompleteAssetTransactionList();
+      
       // set states
-      setFullDividendData(dividendData);
-      setFullWalletData(data);
+      //setFullDividendData(dividendData);
+      //setFullWalletData(data);
 
       reportUtils.generatePDFReport( selectedReportType );
       
