@@ -55,3 +55,17 @@ export interface ICompleteDividendReportResponse {
   "amount"  : number,
   "category" : string,
 }
+
+export interface ICompleteAssetTransactionListResponse {
+  "Data do Negócio": string,
+  "Tipo de Movimentação": string,
+  "Mercado": string,
+  "Prazo/Vencimento": string,
+  "Instituição": string,
+  "Código de Negociação": string,
+  "Quantidade": number,
+  "Preço": number,
+  "Valor": number,
+  "Mês": number,
+  "Ano": number
+}
