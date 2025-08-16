@@ -11,7 +11,7 @@ class ReportUtils {
     protected reportYear: number;
     protected assetItems: ICompleteAssetReportResponse[] = [];
     protected dividendItems: ICompleteDividendReportResponse[] = [];
-    protected readonly TYPES: string[] = ["complete", "assetTransactions", "dividend", "asset"] as const;
+    protected readonly TYPES: string[] = ["complete", "assetTransactions", "dividend", "assets"] as const;
 
     public constructor() {
         this.WALLET_COMPLETE_ENDPOINT = import.meta.env.VITE_WALLET_COMPLETE_ENDPOINT;
@@ -117,8 +117,8 @@ class ReportUtils {
         const docNameMap = new Map<string, string>();
         docNameMap.set("complete", "completo");
         docNameMap.set("assetTransactions", "transacoes");
-        docNameMap.set("dividends", "dividendos");
-        docNameMap.set("asset", "ativos");
+        docNameMap.set("dividend", "dividendos");
+        docNameMap.set("assets", "ativos");
 
         
         if( ! ( this.TYPES.includes( reportType ) ) )
@@ -140,7 +140,9 @@ class ReportUtils {
         // TYPES[3] = asset
         else if( this.TYPES[3].includes( reportType ) ) {
             this.generateAssetsReport( pdfDoc );
+            console.log(`generating asset report 1`)
         }
+        console.log(`generating report: ${reportType} | list: ${this.TYPES[3]} | bool: ${this.TYPES[3].includes( reportType )}`)
         
         
         // save PDF name to download it

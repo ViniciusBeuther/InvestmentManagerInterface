@@ -24,7 +24,7 @@ interface IReportsProps {
   investmentData: Data[];
 }
 
-type ReportType = 'complete' | 'performance' | 'distribution' | 'transactions';
+type ReportType = 'complete' | 'assetTransactions' | 'dividend' | 'assets';
 type ReportPeriod = 'monthly' | 'quarterly' | 'yearly';
 
 const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
@@ -66,23 +66,23 @@ const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
       color: 'from-blue-500 to-blue-600'
     },
     {
-      id: 'performance' as ReportType,
-      title: 'Performance',
-      description: 'Análise de desempenho e rentabilidade',
+      id: 'assets' as ReportType,
+      title: 'Ativos',
+      description: 'Relatório da posição no dia 31 de dezembro.',
       icon: TrendingUp,
       color: 'from-green-500 to-green-600'
     },
     {
-      id: 'distribution' as ReportType,
-      title: 'Distribuição',
-      description: 'Alocação de ativos por categoria e setor',
+      id: 'dividend' as ReportType,
+      title: 'Dividendos Recebidos',
+      description: 'Dividendos recebidos no ano determinado.',
       icon: PieChart,
       color: 'from-purple-500 to-purple-600'
     },
     {
-      id: 'transactions' as ReportType,
+      id: 'assetTransactions' as ReportType,
       title: 'Transações',
-      description: 'Histórico detalhado de compras e vendas',
+      description: 'Histórico detalhado de compras e vendas (completo).',
       icon: BarChart3,
       color: 'from-orange-500 to-orange-600'
     }
@@ -105,7 +105,7 @@ const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
       setFullDividendData(dividendData);
       setFullWalletData(data);
 
-      reportUtils.generatePDFReport( "total" );
+      reportUtils.generatePDFReport( selectedReportType );
       
     }, 3000);
   };
