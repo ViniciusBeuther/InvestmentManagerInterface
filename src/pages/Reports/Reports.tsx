@@ -105,7 +105,7 @@ const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
       setFullDividendData(dividendData);
       setFullWalletData(data);
 
-      reportUtils.generatePDFReport();
+      reportUtils.generatePDFReport( "total" );
       
     }, 3000);
   };

@@ -11,6 +11,7 @@ class ReportUtils {
     protected reportYear: number;
     protected assetItems: ICompleteAssetReportResponse[] = [];
     protected dividendItems: ICompleteDividendReportResponse[] = [];
+    protected readonly TYPES: string[] = ["complete", "assetTransactions", "dividend", "asset"] as const;
 
     public constructor() {
         this.WALLET_COMPLETE_ENDPOINT = import.meta.env.VITE_WALLET_COMPLETE_ENDPOINT;
@@ -67,11 +68,17 @@ class ReportUtils {
         return data;
     }
 
-    public async generatePDFReport() {
-        let pdfDoc = new jsPDF();
+    public getDateIdentifier(): string {
         const date = new Date();
-        const generatedTime = ( date.getMonth() + 1 ).toString() + "." + date.getFullYear().toString() + "-" + date.getHours().toString() + date.getMinutes().toString();
+        return ( date.getMonth() + 1 ).toString() + "." + date.getFullYear().toString() + "-" + date.getHours().toString() + date.getMinutes().toString();
+    }
 
+
+    /**
+     * Used to generate the .pdf containing all the assets that the user had in the
+     * provided year, it is used to declare the IR
+     */
+    public generateAssetsReport( pdfDoc : jsPDF ) : void {
         // insert table for assets situation
         autoTable(pdfDoc, {
             head: [this.TABLE_HEADER_ASSETS],
@@ -85,7 +92,13 @@ class ReportUtils {
                 ])
             ]
         });
+    }
 
+    /**
+     * Used to generate the .pdf containing the total of dividends/JCP that the user received in the
+     * provided year, it is used to declare the IR. (it gets the situation on 12/31/yyyy)
+     */
+    public generateTotalDividends( pdfDoc: jsPDF ) : void {
         // insert table for dividends
         autoTable(pdfDoc, {
             head: [this.TABLE_HEADER_DIVIDENDS],
@@ -97,11 +110,43 @@ class ReportUtils {
                 ])
             ]
         })
-
-        // save PDF name to download it
-        pdfDoc.save(`report_completo_${ generatedTime }.pdf`);
     }
 
+    public generatePDFReport( reportType: string ): void {
+        let pdfDoc = new jsPDF();
+        const docNameMap = new Map<string, string>();
+        docNameMap.set("complete", "completo");
+        docNameMap.set("assetTransactions", "transacoes");
+        docNameMap.set("dividends", "dividendos");
+        docNameMap.set("asset", "ativos");
+
+        
+        if( ! ( this.TYPES.includes( reportType ) ) )
+            throw new Error("invalid type.");
+
+        // TYPES[0] = complete
+        if( this.TYPES[0].includes( reportType ) ){
+            this.generateAssetsReport( pdfDoc );
+            this.generateTotalDividends( pdfDoc );
+        } 
+        // TYPES[1] = assetTransactions
+        else if( this.TYPES[1].includes( reportType ) ){
+            console.log( "generate assets transaction list" );
+        }
+        // TYPES[2] = dividends
+        else if( this.TYPES[2].includes( reportType ) ) {
+            this.generateTotalDividends( pdfDoc );
+        }
+        // TYPES[3] = asset
+        else if( this.TYPES[3].includes( reportType ) ) {
+            this.generateAssetsReport( pdfDoc );
+        }
+        
+        
+        // save PDF name to download it
+        pdfDoc.save(`report_${ docNameMap.get( reportType ) }_${ this.getDateIdentifier() }.pdf`);
+    }
+    
 };
 
 export default ReportUtils;
