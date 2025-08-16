@@ -69,7 +69,10 @@ class ReportUtils {
 
     public async generatePDFReport() {
         let pdfDoc = new jsPDF();
+        const date = new Date();
+        const generatedTime = ( date.getMonth() + 1 ).toString() + "." + date.getFullYear().toString() + "-" + date.getHours().toString() + date.getMinutes().toString();
 
+        // insert table for assets situation
         autoTable(pdfDoc, {
             head: [this.TABLE_HEADER_ASSETS],
             body: [
@@ -83,7 +86,20 @@ class ReportUtils {
             ]
         });
 
-        pdfDoc.save('assets.pdf');
+        // insert table for dividends
+        autoTable(pdfDoc, {
+            head: [this.TABLE_HEADER_DIVIDENDS],
+            body: [
+                ...this.dividendItems.map(item => [
+                    item.asset,
+                    formatAmount( item.amount ),
+                    item.category
+                ])
+            ]
+        })
+
+        // save PDF name to download it
+        pdfDoc.save(`report_completo_${ generatedTime }.pdf`);
     }
 
 };
