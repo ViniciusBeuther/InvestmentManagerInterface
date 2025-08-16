@@ -1,3 +1,4 @@
+import dayjs, { Dayjs } from "dayjs";
 import { BRAPIResponse, Data, IMarginResponse } from "../types/data";
 
 /**
@@ -333,4 +334,20 @@ export const getTop5Margin = (category: string, portfolio: Data[]): IMarginRespo
         console.log("Invalid category specified for getTop5Margin. Returning default.");
         return [{ symbol: '', margin: 0, category: '', quantity: 0, avgPrice: 0 }];
     }
+}
+
+/**
+ * used to parse and format the date from the spreadsheet to insert in the transactions list report
+ * @param date string date to be formatted
+ * @param outputFormat is the output format
+ * @returns formattedDate
+ */
+export const formatDate = ( date: string, outputFormat: string ) => {
+    let dateFromInput = new Date( date );
+    let dayJsDate: Dayjs = dayjs( dateFromInput );
+    const formattedDate: string = dayJsDate.format( outputFormat );
+
+    // console.log( " date formatting:  " + formattedDate )
+    
+    return formattedDate;
 }
