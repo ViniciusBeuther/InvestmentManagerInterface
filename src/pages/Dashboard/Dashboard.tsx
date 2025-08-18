@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './index.css';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import { Data, dividendPerformanceInterface, IMarginResponse, totalsInterface } from '../../types/data';
+import { Data, IDividendPerformanceInterface, IMarginResponse, ITotalsInterface } from '../../types/data';
 import {
     calculateTotalInvestedMarketPrice,
     formatAmount,
@@ -52,8 +52,8 @@ const Dashboard = ( props: DashboardProps ) => {
     const distributionAPIendpoint = 'http://localhost:8000/wallet/distribution';
     const monthlyContributionAPIEndpoint = 'http://localhost:8000/wallet/contributionHistory';
 
-    const [totalData, setTotalData] = useState<totalsInterface | null>(null);
-    const [dividendPerformanceData, setDividendPerformanceData] = useState<dividendPerformanceInterface | null>(null);
+    const [totalData, setTotalData] = useState<ITotalsInterface | null>(null);
+    const [dividendPerformanceData, setDividendPerformanceData] = useState<IDividendPerformanceInterface | null>(null);
     const [distributionData, setDistributionData] = useState<DistributionResponse | null>(null);
     const [monthlyContributionData, setMonthlyContributionData] = useState<IMonthlyContribution[] | null>(null);
     const userAssets: Data[] = props.investmentData;
@@ -314,7 +314,7 @@ const Dashboard = ( props: DashboardProps ) => {
                                         <p className="text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
                                             {formatAmount(dividendPerformanceData.totalReceived)}
                                         </p>
-                                        <span className="text-emerald-600 text-sm font-medium">este mês</span>
+                                        <span className="text-emerald-600 text-sm font-medium">no mês anterior</span>
                                     </div>
                                     <div className="flex items-center gap-2 pt-2">
                                         <div className="flex items-center gap-1 text-emerald-600">

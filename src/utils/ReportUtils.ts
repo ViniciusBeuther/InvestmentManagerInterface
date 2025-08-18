@@ -93,7 +93,6 @@ class ReportUtils {
         const response = await fetch( `${ this.ALL_TRANSACTIONS_ENDPOINT }` );
         const data = await response.json();
         this.completeAssetTransactionsItems = data;
-        this.completeAssetTransactionsItems.forEach((item) => console.log(item["Data do Negócio"], " = ", item["Código de Negociação"]))
         return data;
     }
 
@@ -196,7 +195,7 @@ class ReportUtils {
         else if( this.TYPES[3].includes( reportType ) ) {
             this.generateAssetsReport( pdfDoc );
         }
-        console.log(`generating report: ${reportType} | list: ${this.TYPES[3]} | bool: ${this.TYPES[3].includes( reportType )}`)
+        //console.log(`generating report: ${reportType} | list: ${this.TYPES[3]} | bool: ${this.TYPES[3].includes( reportType )}`)
         
         
         // save PDF name to download it

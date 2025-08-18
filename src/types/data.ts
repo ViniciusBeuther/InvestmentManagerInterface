@@ -6,12 +6,12 @@ export interface Data{
   "Tipo": string
 }
 
-export interface totalsInterface {
+export interface ITotalsInterface {
   'totalInvestido': number,
   'totalDividendos': number,
 }
 
-export interface dividendPerformanceInterface{
+export interface IDividendPerformanceInterface{
   'totalInvested' : number,
   'totalReceived' : number,
   'performance' : number,

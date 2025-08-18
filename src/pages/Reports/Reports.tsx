@@ -3,7 +3,6 @@ import {
   Download, 
   FileText, 
   TrendingUp, 
-  DollarSign, 
   PieChart, 
   BarChart3, 
   Loader2,
@@ -13,29 +12,18 @@ import {
 } from 'lucide-react';
 import React, { useState } from 'react';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import { Data, ICompleteAssetReportResponse, ICompleteDividendReportResponse } from '../../types/data';
 import ReportUtils from '../../utils/ReportUtils';
-import { jsPDF } from 'jspdf'
-import { autoTable } from 'jspdf-autotable'
-
-
-interface IReportsProps {
-  // Add any props you might need later
-  investmentData: Data[];
-}
 
 type ReportType = 'complete' | 'assetTransactions' | 'dividend' | 'assets';
 type ReportPeriod = 'monthly' | 'quarterly' | 'yearly';
 
-const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
+const Reports: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
   const [selectedReportType, setSelectedReportType] = useState<ReportType>('complete');
   const [selectedPeriod, setSelectedPeriod] = useState<ReportPeriod>('yearly');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const reportUtils = new ReportUtils();
-  const [fullWalletData, setFullWalletData] = useState<ICompleteAssetReportResponse[]>([]);
-  const [fullDividendData, setFullDividendData] = useState<ICompleteDividendReportResponse[]>([]);
 
   // Generate year options (current year and past 10 years)
   const yearOptions = Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - i);
@@ -89,24 +77,17 @@ const Reports: React.FC<IReportsProps> = (props: IReportsProps) => {
   ];
 
   const handleGenerateReport = () => {
-    // TODO: Implement PDF generation logic
     setIsGenerating(true);
     
-    // Simulate report generation
+    // Report generation
     setTimeout(async () => {
-      setIsGenerating(false);
-      // Here you would trigger the actual PDF generation and download
-      
+    setIsGenerating(false);
       // fetching data from API and storing it in the class attributes for generating the reports correctly
       // using private and internal methods
       await reportUtils.getWalletCompleteForYear(selectedYear);
       await reportUtils.getCompleteDividendsForYear(selectedYear);
       await reportUtils.getCompleteAssetTransactionList();
       
-      // set states
-      //setFullDividendData(dividendData);
-      //setFullWalletData(data);
-
       reportUtils.generatePDFReport( selectedReportType );
       
     }, 3000);
