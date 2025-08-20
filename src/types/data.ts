@@ -6,6 +6,14 @@ export interface Data{
   "Tipo": string
 }
 
+export interface RealTimeData{
+  "Código de Negociação": string,
+  "Quantidade": number,
+  "Valor": number,
+  "Preço Médio": number,
+  "Tipo": string
+}
+
 export interface ITotalsInterface {
   'totalInvestido': number,
   'totalDividendos': number,
