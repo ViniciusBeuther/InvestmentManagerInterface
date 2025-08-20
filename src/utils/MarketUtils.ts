@@ -1,4 +1,4 @@
-import { BRAPIResponse, Data } from "../types/data";
+import { BRAPIResponse, Data, RealTimeData } from "../types/data";
 import { formatAmount, formatPercentage, getCompletePortfolio, getDataFromLocalStorage } from "./utils";
 import treasureLogo from '../../public/treasureLogo.png';
 import FIILogo from '../../public/FIILogo.png';
@@ -79,6 +79,12 @@ public async getFullProfitOrLossByCategory(): Promise<number> {
     });
 
     return totalProfitOrLoss;
+}
+
+public async getPortfolioStatisticsRealTime( localPortfolio: Data[] ): Promise< RealTimeData[] >  {
+    
+    
+    return [];
 }
 
 };
